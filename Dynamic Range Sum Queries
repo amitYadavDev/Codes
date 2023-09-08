@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void segmentTree(int ind, int low, int high, vector<long long> &seg, vector<long long> &inp) {
+    if(low == high) {
+        seg[ind] = inp[low];
+        return;
+    }
+    int mid = (low + high) >> 1;
+    segmentTree(2 * ind + 1, low, mid, seg, inp);
+    segmentTree(2 * ind + 2, mid + 1, high, seg, inp);
+    seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2];
+}
+
+void update(int ind, int low, int high, int pos, long long val, vector<long long> &seg) {
+    if(low == high) {
+        seg[ind] = val;
+        return;
+    }
+    int mid = (low + high) >> 1;
+    if(pos <= mid) update(2 * ind + 1, low, mid, pos, val, seg);
+    else update(2 * ind + 2, mid + 1, high, pos, val, seg);
+    seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2]; 
+}
+
+long long query(int ind, int low, int high, int l, int r, vector<long long> &seg) {
+    if(high < l || low > r) return 0LL;
+    if(low >= l && high <= r) return seg[ind];
+    int mid = (low + high) >> 1;
+    long long left = query(2 * ind + 1, low, mid, l, r, seg);
+    long long right = query(2 * ind + 2, mid + 1, high, l, r, seg);
+    return left + right;
+}
+void test_case() {
+    int n, q;
+    cin >> n >> q;
+    vector<long long> inp(n);
+
+    for(auto &a : inp) cin >> a;
+
+    vector<long long> seg(4 * n);
+    segmentTree(0, 0, n - 1, seg, inp);
+
+    while(q--) {
+        int type, l, r;
+        cin >> type;
+        if(type == 1) {
+            int pos;
+            long long val;
+            cin >> pos >> val;
+            pos--;
+            update(0, 0, n - 1, pos, val, seg);
+        } else {
+            cin >> l >> r;
+            l--;
+            r--;
+            cout << query(0, 0, n - 1, l, r, seg) << endl;
+        }
+    }
+
+
+}
+
+int main(){  
+    int t = 1;
+    // cin >> t;
+    while(t--) test_case();
+    return 0;
+}
