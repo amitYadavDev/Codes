@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 void segmentTree(int ind, int low, int high, vector<long long> &seg, vector<long long> &inp) {
     if(low == high) {
         seg[ind] = inp[low];
@@ -32,6 +31,7 @@ long long query(int ind, int low, int high, int l, int r, vector<long long> &seg
     long long right = query(2 * ind + 2, mid + 1, high, l, r, seg);
     return left + right;
 }
+
 void test_case() {
     int n, q;
     cin >> n >> q;
